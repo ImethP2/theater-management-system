@@ -5,11 +5,12 @@ public class Person {
     private String email;
     private double full_cost;
 
-    public Person(int person_id, String name, String surname, String email) {
+    public Person(int person_id, String name, String surname, String email, double full_cost) {
         this.person_id = person_id;
         this.name = name;
         this.surname = surname;
         this.email = email;
+        this.full_cost = full_cost;
     }
 
     public double getFull_cost() {
@@ -17,11 +18,6 @@ public class Person {
     }
 
     public void setFull_cost(double full_cost) {
-        this.full_cost = full_cost;
-    }
-
-    public Person(int person_id, double full_cost){
-        this.person_id = person_id;
         this.full_cost = full_cost;
     }
 
@@ -58,6 +54,6 @@ public class Person {
     }
 
     public String toString(){
-        return "Person ID :"+person_id+" Name : "+name+" Surname : "+surname+" Email : "+email;
+        return "Person ID :"+person_id+" Name : "+name+" Surname : "+surname+" Email : "+email +" Full Cost : "+full_cost;
     }
 }

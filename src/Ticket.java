@@ -1,4 +1,4 @@
-public class Ticket<person_id> {
+public class Ticket {
     private String ticket_id;
     private int row;
     private int seat;
@@ -12,10 +12,6 @@ public class Ticket<person_id> {
         this.seat = seat;
         this.price = price;
         this.person_id = person_id;
-    }
-
-    public Ticket() {
-
     }
 
     public int getRow() {
@@ -59,7 +55,6 @@ public class Ticket<person_id> {
         this.price = price;
     }
 
-    //Ticket ticket_object = new Ticket(ticket_id, row, seat, price);
 
     public String toString(){
         return "Ticket ID : "+ticket_id+" Row : " + row +" Seat : "+seat+" Price : £"+price;
