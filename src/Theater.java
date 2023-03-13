@@ -6,9 +6,10 @@ public class Theater {
     public static int row;
     public static int seat;
     static int person_tickets;
+    static int person_id;
     static int all_tickets;
     public static void main (String[] args) {
-        int person_id=0;
+        person_id=0;
         int[] row1 = new int[12];
         int[] row2 = new int[16];
         int[] row3 = new int[20];
@@ -48,7 +49,7 @@ public class Theater {
                 } else if (choice == 2) {
                     print_seating_area(row1, row2, row3);
                 } else if (choice == 3) {
-                    cancel_ticket(row1, row2, row3, person_id, Sold_Tickets);
+                    cancel_ticket(row1, row2, row3, Sold_Tickets, Customers);
                 } else if (choice == 4) {
                     show_available(row1, row2, row3);
 
@@ -293,57 +294,90 @@ public class Theater {
         }
     }
 
-    public static void cancel_ticket(int[] row1,int[] row2,int[] row3,int person_id, ArrayList<Ticket> Sold_Tickets) {
+    public static void cancel_ticket(int[] row1,int[] row2,int[] row3, ArrayList<Ticket> Sold_Tickets, ArrayList<Person> Customers){
+        int person_tickets = 0;
+        int index = 0;
         Scanner input = new Scanner(System.in);
-        int[] person_row = new int[person_tickets];
-        int[] person_seat = new int[person_tickets];
-        int index =0;
-        System.out.println("Your tickets are : ");
-        for (Ticket i:Sold_Tickets){
-            if (i.getPerson_id()==person_id){
-                System.out.println("Row : "+i.getRow()+" Seat : "+i.getSeat());
-                person_row[index] = i.getRow();
-                person_seat[index] = i.getSeat();
-                index++;
-            }
-        }
-        outer_loop:
+        Scanner get_answer = new Scanner(System.in);
+        most_outer:
         while (true) {
-            System.out.print("Enter the row number : ");
-            int row = input.nextInt();
-            for (int r : person_row) {
-                if (r == row) {
-                    System.out.print("Enter the seat number : ");
-                    int seat = input.nextInt();
-                    for (int s : person_seat) {
-                        if (s == seat) {
-                            for (Ticket ticket :Sold_Tickets){
-                                if (ticket.getRow()==row && ticket.getSeat()==seat){
-                                    if (row == 1){
-                                        row1[seat-1]=0;
-                                    }else if(row == 2){
-                                        row2[seat-1] = 0;
-                                    }else {
-                                        row3[seat-1] = 0;
+            System.out.print("Please enter your Person-ID : ");
+            int person_id = input.nextInt();
+            for (Person person : Customers) {
+                if (person.getPerson_id() == person_id) {
+                    System.out.println("Is your name " +person.getSurname()+" "+ person.getName() + "? (Y/N)");
+                    String answer = get_answer.nextLine();
+                    answer = answer.toUpperCase();
+                    if (answer.equals("Y")) {
+                        for (Ticket i : Sold_Tickets) {
+                            if (i.getPerson_id() == person_id) {
+                                person_tickets++;
+                            }
+                        }
+                        int[][] person_row_seat = new int[person_tickets][2];
+/*                        int[] person_row_seat = new int[2];*/
+                        System.out.println("Your tickets are : ");
+                        for (Ticket i : Sold_Tickets) {
+                            if (i.getPerson_id() == person_id) {
+                                System.out.println("Row : " + i.getRow() + " Seat : " + i.getSeat());
+                                person_row_seat [index] [0] = i.getRow();
+                                person_row_seat [index] [1] = i.getSeat();
+                                index++;
+                            }
+                        }
+                        outer_loop:
+                        while (true) {
+                            Scanner input_row_seat = new Scanner(System.in);
+                            System.out.print("Enter the row number : ");
+                            int row = input_row_seat.nextInt();
+                            for (int[] x: person_row_seat) {
+                                for (int r : x) {
+                                    if (r == row) {
+                                        System.out.print("Enter the seat number : ");
+                                        int seat = input.nextInt();
+                                        for (int s : x) {
+                                            if (s == seat) {
+                                                for (Ticket ticket : Sold_Tickets) {
+                                                    if (ticket.getRow() == row && ticket.getSeat() == seat) {
+                                                        if (row == 1) {
+                                                            row1[seat - 1] = 0;
+                                                        } else if (row == 2) {
+                                                            row2[seat - 1] = 0;
+                                                        } else {
+                                                            row3[seat - 1] = 0;
+                                                        }
+                                                        Sold_Tickets.remove(ticket);
+                                                        break outer_loop;
+                                                    }
+                                                }
+                                            } else if (r == 1 && (s <= 0 || 13 <= s)) {
+                                                System.err.println("PLease enter a valid seat number.");
+                                            } else if (r == 2 && (s <= 0 || 17 <= s)) {
+                                                System.err.println("PLease enter a valid seat number.");
+                                            } else if (r == 3 && (s <= 0 || 21 <= s)) {
+                                                System.err.println("PLease enter a valid seat number.");
+                                            }
+                                        }
+                                        System.err.println("PLease enter the seat number of ticket that you just bought.");
+                                    } else if (r < 1 || 3 < r) {
+                                        System.err.println("PLease enter a valid row number.");
                                     }
-                                    Sold_Tickets.remove(ticket);
-                                    break outer_loop;
                                 }
                             }
-                        }else if (r == 1 && (s<=0 || 13<=s)) {
-                            System.err.println("PLease enter a valid seat number.");
-                        }else if (r == 2 && (s<=0 || 17<=s)) {
-                            System.err.println("PLease enter a valid seat number.");
-                        }else if (r == 3 && (s<=0 || 21<=s)) {
-                            System.err.println("PLease enter a valid seat number.");
+                            System.err.println("PLease enter the row number of ticket that you just bought.");
                         }
+                        break most_outer;
+                    }else if (answer.equals("N")) {
+                        continue most_outer;
+                    }else{
+                        System.err.println("Please enter a valid answer.");
                     }
-                    System.err.println("PLease enter the seat number of ticket that you just bought.");
-                } else if (r<1 || 3<r) {
-                    System.err.println("PLease enter a valid row number.");
+                }else{
+                    System.err.println("Please enter a valid Person-ID.");
                 }
-            }System.err.println("PLease enter the row number of ticket that you just bought.");
+            }
         }
+
     }
 
     public static void show_available(int[] row1,int[] row2,int[] row3){
@@ -418,17 +452,25 @@ public class Theater {
         String line_row = reader_row.readLine();
         for (int i = 0; i < line_row.length(); i++){
             row1[i] = Integer.parseInt(String.valueOf(line_row.charAt(i)));
+            if (line_row.charAt(i)=='1'){
+                all_tickets++;
+            }
         }
         line_row = reader_row.readLine();
         for (int i = 0; i < line_row.length(); i++){
             row2[i] = Integer.parseInt(String.valueOf(line_row.charAt(i)));
+            if (line_row.charAt(i)=='1'){
+                all_tickets++;
+            }
         }
         line_row = reader_row.readLine();
         for (int i = 0; i < line_row.length(); i++){
             row3[i] = Integer.parseInt(String.valueOf(line_row.charAt(i)));
+            if (line_row.charAt(i)=='1'){
+                all_tickets++;
+            }
         }
         reader_row.close();
-
 
 
         BufferedReader line_person = new BufferedReader(new FileReader("people-data.txt"));
@@ -451,13 +493,15 @@ public class Theater {
         for (int i =0; i<line_count_person ;i++){
             String line_people = line_person.readLine();
             String[] person_arr = line_people.split("-");
-            int person_id = Integer.parseInt(person_arr[0]);
+            person_id = Integer.parseInt(person_arr[0]);
             String name = person_arr[1];
             String surname = person_arr[2];
             String email = person_arr[3];
             double full_cost = Double.parseDouble(person_arr[4]);
             setting_person_object(person_id, name, surname, email, full_cost, Customers);
         }
+        person_id=line_count_person;
+        System.out.println(person_id);
         line_person.close();
 
 
@@ -484,7 +528,7 @@ public class Theater {
             int row = Integer.parseInt(ticket_arr[1]);
             int seat = Integer.parseInt(ticket_arr[2]);
             double price = Double.parseDouble(ticket_arr[3]);
-            int person_id = Integer.parseInt(ticket_arr[4]);
+            person_id = Integer.parseInt(ticket_arr[4]);
             setting_ticket_object(tkt_id, row, seat, price, person_id, Sold_Tickets);
         }
         line_person.close();
