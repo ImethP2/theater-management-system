@@ -54,6 +54,6 @@ public class Person {
     }
 
     public String toString(){
-        return "Person ID :"+person_id+" Name : "+name+" Surname : "+surname+" Email : "+email +" Full Cost : "+full_cost;
+        return "Person ID :"+person_id+" Name : "+name+" Surname : "+surname+" Email : "+email +" Full Cost : £"+full_cost;
     }
 }

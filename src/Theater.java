@@ -6,7 +6,7 @@ public class Theater {
     public static int row;
     public static int seat;
     static int person_tickets;
-    static int person_id;
+    private static int person_id;
     static int all_tickets;
     public static void main (String[] args) {
         person_id=0;
@@ -60,7 +60,7 @@ public class Theater {
                     read(row1, row2, row3, Customers, Sold_Tickets);
 
                 } else if (choice == 7) {
-                    show_tickets_info(person_id, Customers);
+                    show_tickets_info(Customers, Sold_Tickets);
 
                 } else if (choice == 8) {
                     sort_tickets(Customers, Sorted_Customers);
@@ -534,14 +534,20 @@ public class Theater {
         line_person.close();
         System.out.println("Successfully retrieved the data.");
     }
-    public static void show_tickets_info(int person_id, ArrayList<Person> Customers){
+    public static void show_tickets_info(ArrayList<Person> Customers, ArrayList<Ticket> Sold_Tickets){
+        int total_cost = 0;
+        System.out.println("Tickets that have been issued are : ");
         for (Person person : Customers){
-            if (person.getPerson_id() == person_id){
-                System.out.println(person);
-            }else{
-                System.err.println("Please buy a ticket.");
+            System.out.println(person);
+            for (Ticket tickets : Sold_Tickets){
+                if (person.getPerson_id() == tickets.getPerson_id()){
+                    System.out.println(tickets);
+                    total_cost += tickets.getPrice();
+                }
             }
+            System.out.println(" ");
         }
+        System.out.println("Total cost of all tickets : £" + total_cost);
     }
 
     public static void sort_tickets(ArrayList<Person> Customers, ArrayList<Person> Sorted_Customers){
