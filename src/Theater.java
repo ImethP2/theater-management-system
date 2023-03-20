@@ -1,14 +1,24 @@
 import java.io.*;
 import java.util.*;
 
-
+/**
+ * This class is the main class of the "Theater" application.
+ * "Theater" is a very simple, text based theater booking system.
+ *
+ * @author imeth hansidu pathirana
+ * @version 2023.03.18
+ */
 public class Theater {
+
     public static int row;
     public static int seat;
     static int person_tickets;
     private static int person_id;
     static int all_tickets;
     public static void main (String[] args) {
+        /*
+         * The main method of the Theater class
+         */
         person_id=0;
         int[] row1 = new int[12];
         int[] row2 = new int[16];
@@ -17,6 +27,7 @@ public class Theater {
         ArrayList<Ticket> Sold_Tickets = new ArrayList<>();
         ArrayList<Person> Sorted_Customers = new ArrayList<>();
         Scanner menu_input = new Scanner(System.in);
+
         while (true){
             System.out.println(" ");
             System.out.println(" ");
@@ -380,12 +391,13 @@ public class Theater {
                                                     double new_total = customer.getFull_cost() - deducting_price;
                                                     Person new_person = setting_person_object(person_id, name, surname, email, new_total);
                                                     Customers.set(person_id - 1, new_person);
+                                                    System.out.println("Your ticket has been cancelled.");
+                                                    System.out.println(Customers.get(person_id - 1).getFull_cost());
                                                 }
                                             }
                                             break;
                                         }
                                     }
-                                    System.out.println("Your ticket has been cancelled.");
                                     break most_outer;
                                 } else {
                                     System.err.println("You don't have a ticket in this row and seat number.");

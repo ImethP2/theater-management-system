@@ -1,3 +1,8 @@
+/**
+ * This class contains methods that validate the data of a Person object.
+ * @author imeth pathirana
+ * @version 2023.03.18
+ */
 public class PersonValidators {
     public static boolean EmailChecker(String email) {
         String regex = "^[\\w-\\.-_]+@([\\w-]+\\.)+[\\w-]{2,4}$";

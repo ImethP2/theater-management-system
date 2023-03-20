@@ -1,9 +1,11 @@
+
 public class Person {
     private int person_id;
     private String name;
     private String surname;
     private String email;
     private double full_cost;
+
 
     public Person(int person_id, String name, String surname, String email, double full_cost) {
         this.person_id = person_id;
