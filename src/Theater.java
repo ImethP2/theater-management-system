@@ -406,11 +406,13 @@ public class Theater {
                 // Getting the person id
                 System.out.print("Please enter your Person-ID : ");
                 int person_id = input.nextInt();
+                System.out.print("Please enter your email address : ");
+                String person_email = get_answer.nextLine();
                 // Checking if the person id is valid
                 for (Person person : Customers) {
-                    if (person.getPerson_id() == person_id) {
+                    if ((person.getPerson_id() == person_id) && (person.getEmail().equals(person_email))) {
                         //make sure that the person is the owner of the ticket
-                        System.out.println("Is your name " + person.getSurname() + " " + person.getName() + "? (Y/N)");
+                        System.out.println("Is your name " + person.getName() + " " + person.getSurname() + "? (Y/N)");
                         String answer = get_answer.nextLine();
                         answer = answer.toUpperCase();
                         if (answer.equals("Y")) {
@@ -426,9 +428,13 @@ public class Theater {
                             // Storing the row and seat number of the tickets that the person has
                             for (Ticket i : Sold_Tickets) {
                                 if (i.getPerson_id() == person_id) {
-                                    System.out.println("Row : " + i.getRow() + " Seat : " + i.getSeat());
                                     person_row_seat[index][0] = i.getRow();
                                     person_row_seat[index][1] = i.getSeat();
+                                    if (i.getRow() > 99 || i.getSeat() > 99){
+                                        System.out.println("Row : " + i.getRow()/100 + " Seat : " + i.getSeat()/100 + " (CANCELLED)");
+                                    }else{
+                                        System.out.println("Row : " + i.getRow() + " Seat : " + i.getSeat());
+                                    }
                                     index++;
                                 }
                             }
@@ -440,10 +446,7 @@ public class Theater {
                                 System.out.print("Enter the seat number : ");
                                 int seat = input_row_seat.nextInt();
                                 // Checking if the row and seat number is valid
-                                if ((row == 1 && (seat < 1 || seat > 12)) || (row == 2 && (seat < 1 || seat > 16)) || (row == 3 && (seat < 1 || seat > 20))) {
-                                    System.err.println("Please enter a valid row and seat number.");
-                                    System.out.println(" ");
-                                } else {
+                                if ((row == 1 && (seat > 0 && seat < 13)) || (row == 2 && (seat > 0 && seat < 17)) || (row == 3 && (seat > 0 && seat < 21))) {
                                     // Checking if the person is the owner of the ticket
                                     cancel_row_seat[0] = row;
                                     cancel_row_seat[1] = seat;
@@ -467,6 +470,8 @@ public class Theater {
                                                 // Changing the ticket id to CANCEL
                                                 String tkt_id = "CANCEL" + i.getTicket_id().substring(5,7);
                                                 i.setTicket_id(tkt_id);
+                                                i.setRow(i.getRow()*100);
+                                                i.setSeat(i.getSeat()*100);
                                                 // Changing the price to 50% of the original price
                                                 i.setPrice(i.getPrice()/2);
                                                 all_tickets--;
@@ -492,6 +497,9 @@ public class Theater {
                                         System.err.println("You don't have a ticket in this row and seat number.");
                                         System.out.println(" ");
                                     }
+                                } else {
+                                    System.err.println("Please enter a valid row and seat number.");
+                                    System.out.println(" ");
                                 }
                             }
                         } else if (answer.equals("N")) {
@@ -501,12 +509,13 @@ public class Theater {
                             System.out.println(" ");
                         }
                     } else {
-                        System.err.println("Please enter a valid Person-ID.");
+                        System.err.println("Please enter a valid Person-ID or Email.");
                         System.out.println(" ");
+                        break;
                     }
                 }
             }catch (Exception e){
-                System.err.println("Please enter a valid Person-ID.");
+                System.err.println("Please enter a valid Person-ID or Email.");
                 System.out.println(" ");
             }
         }
