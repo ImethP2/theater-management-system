@@ -5,10 +5,20 @@
  */
 public class PersonValidators {
     public static boolean EmailChecker(String email) {
+        /**
+         * This method checks if the email is valid.
+         * @param email The email to be checked.
+         * @return true if the email is valid, false otherwise.
+         */
         String regex = "^[\\w-\\.-_]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         return email.matches(regex);
     }
     public static boolean NameChecker(String name) {
+        /**
+         * This method checks if the name is valid.
+         * @param name The name to be checked.
+         * @return true if the name is valid, false otherwise.
+         */
         // Check if the name is null or empty
         if (name == null || name.isEmpty()) {
             return false;
