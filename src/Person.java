@@ -14,6 +14,7 @@ public class Person {
     private String email;
     private double full_cost;
 
+
     /**
      * This method is the constructor of the Person class.
      * @param person_id The person ID.
@@ -24,15 +25,22 @@ public class Person {
      */
 
     // Constructor
-    public Person(int person_id, String name, String surname, String email, double full_cost) {
+    public Person(int person_id, String name, String surname, String email, double full_cost){
         this.person_id = person_id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.full_cost = full_cost;
     }
+    public Person(int person_id, String name, String surname, String email){
+        this.person_id = person_id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+    }
 
     // Getters and Setters
+
     public double getFull_cost() {
         return full_cost;
     }
@@ -74,7 +82,10 @@ public class Person {
     }
 
     // toString method
-    public String toString(){
+    public String toStringFull(){
         return "Person ID :"+person_id+" Name : "+name+" Surname : "+surname+" Email : "+email +" Full Cost : £"+full_cost;
+    }
+    public String toString(){
+        return " Name : "+name+" Surname : "+surname+" Email : "+email;
     }
 }

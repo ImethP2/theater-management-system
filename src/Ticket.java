@@ -11,6 +11,7 @@ public class Ticket {
     private int seat;
     private double price;
     private int person_id;
+    private Person person;
     /**
      * This method is the constructor of the Ticket class.
      * @param ticket_id The ticket ID.
@@ -21,14 +22,21 @@ public class Ticket {
      */
 
     // Constructor
-    public Ticket(String ticket_id, int row, int seat, double price, int person_id) {
+    public Ticket(String ticket_id, int row, int seat, double price, int person_id, Person person) {
         this.ticket_id = ticket_id;
         this.row = row;
         this.seat = seat;
         this.price = price;
         this.person_id = person_id;
+        this.person = person;
     }
     // Getters and Setters
+    public Person getPerson() {
+        return person;
+    }
+    public void setPerson(Person person) {
+        this.person = person;
+    }
     public int getRow() {
         return row;
     }
@@ -72,6 +80,6 @@ public class Ticket {
 
     // toString method
     public String toString(){
-        return "Ticket ID : "+ticket_id+" Row : " + row +" Seat : "+seat+" Price : £"+price;
+        return "Person : [ "+person+" ] Ticket ID : "+ticket_id+" Row : " + row +" Seat : "+seat+" Price : £"+price;
     }
 }
