@@ -79,7 +79,7 @@ public class Ticket {
     }
 
     // toString method
-    public String toString(){
+    public String print(){
         return "Person : [ "+person+" ] Ticket ID : "+ticket_id+" Row : " + row +" Seat : "+seat+" Price : £"+price;
     }
 }

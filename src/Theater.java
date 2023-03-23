@@ -24,7 +24,7 @@ public class Theater {
         int[] row3 = new int[20];
         ArrayList<Person> Customers = new ArrayList<>();
         ArrayList<Ticket> Sold_Tickets = new ArrayList<>();
-        ArrayList<Person> Sorted_Customers = new ArrayList<>();
+        ArrayList<Person> Sorted_Tickets = new ArrayList<>();
         Scanner menu_input = new Scanner(System.in);
 
         while (true){
@@ -53,7 +53,6 @@ public class Theater {
                     break;
                 } else if (choice == 1) {
                     person_id += 1;
-                    System.out.println("Buy a ticket.");
                     buy_tickets(row1, row2, row3, person_id, Customers, Sold_Tickets);
 
                 } else if (choice == 2) {
@@ -70,10 +69,10 @@ public class Theater {
                     read(row1, row2, row3, Customers, Sold_Tickets);
 
                 } else if (choice == 7) {
-                    show_tickets_info(Customers, Sold_Tickets);
+                    show_tickets_info( Sold_Tickets);
 
                 } else if (choice == 8) {
-                    sort_tickets(Customers, Sorted_Customers);
+                    sort_tickets(Customers, Sorted_Tickets);
 
                 } else {
                     System.err.println("Enter a valid choice!");
@@ -175,6 +174,8 @@ public class Theater {
                 }
             } while (!PersonValidators.EmailChecker(email));
 
+            setting_person_object(person_id, name, surname, email);
+
             // Getting the full tickets
             if (full_tkt > 0) {
                 System.out.println("Getting the Full Tickets.");
@@ -195,7 +196,7 @@ public class Theater {
                     // Adding the price to the full cost
                     full_cost += price;
                     // Setting the ticket object
-                    setting_ticket_object(tkt_id, row, seat, price, person_id, Sold_Tickets);
+                    setting_ticket_object(tkt_id, row, seat, price, person_id, Sold_Tickets, setting_person_object(person_id, name, surname, email));
                 }
             }
             // Getting the half tickets
@@ -218,7 +219,7 @@ public class Theater {
                     // Adding the price to the full cost
                     full_cost += price;
                     // Setting the ticket object
-                    setting_ticket_object(tkt_id, row, seat, price, person_id, Sold_Tickets);
+                    setting_ticket_object(tkt_id, row, seat, price, person_id, Sold_Tickets, setting_person_object(person_id, name, surname, email));
                 }
             }
             // Setting the person object
@@ -227,12 +228,22 @@ public class Theater {
             System.out.println("Your tickets are ready.");
             // Printing the tickets
             for (int i = all_tickets - person_tickets; i < all_tickets; i++) {
-                System.out.println(Sold_Tickets.get(i));
+                System.out.println(Sold_Tickets.get(i).print());
             }
         }
     }
 
     //this is an overloaded method of the setting_person_object method
+    public static Person setting_person_object(int person_id, String name, String surname, String email){
+        // Setting the person object
+        Person person_object = new Person(person_id, name, surname, email);
+        person_object.setPerson_id(person_id);
+        person_object.setName(name);
+        person_object.setSurname(surname);
+        person_object.setEmail(email);
+        return person_object;
+    }
+
     public static Person setting_person_object(int person_id, String name, String surname, String email, double full_cost){
         // Setting the person object
         Person person_object = new Person(person_id, name, surname, email, full_cost);
@@ -257,13 +268,14 @@ public class Theater {
     }
 
     //Setting the ticket object
-    public static void setting_ticket_object(String tkt_id,int row, int seat, double price, int person_id, ArrayList<Ticket> Sold_Tickets){
-        Ticket ticket_object = new Ticket(tkt_id, row, seat, price, person_id);
+    public static void setting_ticket_object(String tkt_id,int row, int seat, double price, int person_id, ArrayList<Ticket> Sold_Tickets, Person person_object){
+        Ticket ticket_object = new Ticket(tkt_id, row, seat, price, person_id,person_object);
         ticket_object.setTicket_id(tkt_id);
         ticket_object.setRow(row);
         ticket_object.setSeat(seat);
         ticket_object.setPrice(price);
         ticket_object.setPerson_id(person_id);
+        ticket_object.setPerson(person_object);
         // Adding the ticket object to the array list
         Sold_Tickets.add(ticket_object);
     }
@@ -430,11 +442,7 @@ public class Theater {
                                 if (i.getPerson_id() == person_id) {
                                     person_row_seat[index][0] = i.getRow();
                                     person_row_seat[index][1] = i.getSeat();
-                                    if (i.getRow() > 99 || i.getSeat() > 99){
-                                        System.out.println("Row : " + i.getRow()/100 + " Seat : " + i.getSeat()/100 + " (CANCELLED)");
-                                    }else{
-                                        System.out.println("Row : " + i.getRow() + " Seat : " + i.getSeat());
-                                    }
+                                    System.out.println("Row : " + i.getRow() + " Seat : " + i.getSeat());
                                     index++;
                                 }
                             }
@@ -467,13 +475,9 @@ public class Theater {
                                         }
                                         for (Ticket i : Sold_Tickets) {
                                             if (i.getPerson_id() == person_id && i.getRow() == row && i.getSeat() == seat) {
-                                                // Changing the ticket id to CANCEL
-                                                String tkt_id = "CANCEL" + i.getTicket_id().substring(5,7);
-                                                i.setTicket_id(tkt_id);
-                                                i.setRow(i.getRow()*100);
-                                                i.setSeat(i.getSeat()*100);
-                                                // Changing the price to 50% of the original price
-                                                i.setPrice(i.getPrice()/2);
+                                                // removing the ticket from the sold tickets array list
+                                                Sold_Tickets.remove(i);
+                                                // Updating the number of tickets
                                                 all_tickets--;
                                                 double deducting_price = i.getPrice();
                                                 //Updating the total cost of the person
@@ -588,7 +592,7 @@ public class Theater {
         FileWriter write_ticket = new FileWriter("ticket-data.txt");
         BufferedWriter buffer_ticket = new BufferedWriter(write_ticket);
         for (Ticket i: Sold_Tickets){
-            buffer_ticket.write(i.getTicket_id()+"/"+i.getRow()+"/"+i.getSeat()+"/"+ i.getPrice() +"/"+i.getPerson_id());
+            buffer_ticket.write(i.getTicket_id()+"/"+i.getRow()+"/"+i.getSeat()+"/"+ i.getPrice() +"/"+i.getPerson_id()+"/"+Customers.get(i.getPerson_id()-1).getName()+"/"+Customers.get(i.getPerson_id()-1).getSurname()+"/"+Customers.get(i.getPerson_id()-1).getEmail());
             buffer_ticket.newLine();
         }
         buffer_ticket.close();
@@ -651,7 +655,6 @@ public class Theater {
             setting_person_object(person_id, name, surname, email, full_cost, Customers);
         }
         person_id=line_count_person;
-        System.out.println(person_id);
         line_person.close();
 
 
@@ -679,46 +682,46 @@ public class Theater {
             int seat = Integer.parseInt(ticket_arr[2]);
             double price = Double.parseDouble(ticket_arr[3]);
             person_id = Integer.parseInt(ticket_arr[4]);
-            setting_ticket_object(tkt_id, row, seat, price, person_id, Sold_Tickets);
+            String name = ticket_arr[5];
+            String surname = ticket_arr[6];
+            String email = ticket_arr[7];
+            setting_ticket_object(tkt_id, row, seat, price, person_id, Sold_Tickets, setting_person_object(person_id, name, surname, email));
         }
         line_person.close();
         System.out.println("Successfully retrieved the data.");
     }
 
     // Method to show the tickets info
-    public static void show_tickets_info(ArrayList<Person> Customers, ArrayList<Ticket> Sold_Tickets){
+    public static void show_tickets_info( ArrayList<Ticket> Sold_Tickets){
         int total_cost = 0;
         System.out.println("Tickets that have been issued are : ");
-        for (Person person : Customers){
-            System.out.println(person);
-            for (Ticket tickets : Sold_Tickets){
-                if (person.getPerson_id() == tickets.getPerson_id()){
-                    System.out.println(tickets);
-                    total_cost += tickets.getPrice();
-                }
-            }
+        for (Ticket tickets : Sold_Tickets){
+            System.out.println(tickets.print());
+            total_cost += tickets.getPrice();
             System.out.println(" ");
         }
+        System.out.println(" ");
+        System.out.println("Total number of tickets sold is : " + Sold_Tickets.size());
         System.out.println("Total income is : £" + total_cost);
     }
 
     // Method to sort the tickets
-    public static void sort_tickets(ArrayList<Person> Customers, ArrayList<Person> Sorted_Customers){
+    public static void sort_tickets(ArrayList<Person> Customers, ArrayList<Person> Sorted_Tickets){
         int n = Customers.size();
-        Sorted_Customers.addAll(Customers);
+        Sorted_Tickets.addAll(Customers);
         for (int i = 0; i < n-1; i++)
             for (int j = 0; j < n-i-1; j++)
-                if (Sorted_Customers.get(j).getFull_cost() < Sorted_Customers.get(j+1).getFull_cost())
+                if (Sorted_Tickets.get(j).getFull_cost() < Sorted_Tickets.get(j+1).getFull_cost())
                 {
-                    Person temp = Sorted_Customers.get(j);
-                    Sorted_Customers.set(j, Sorted_Customers.get(j+1));
-                    Sorted_Customers.set(j+1, temp);
+                    Person temp = Sorted_Tickets.get(j);
+                    Sorted_Tickets.set(j, Sorted_Tickets.get(j+1));
+                    Sorted_Tickets.set(j+1, temp);
                 }
-        for (Person person : Sorted_Customers){
-            System.out.println(person);
+        for (Person person : Sorted_Tickets){
+            System.out.println(person.toStringFull());
         }
         // Clearing the arraylist
         //if not cleared, the arraylist will keep adding the sorted customers
-        Sorted_Customers.clear();
+        Sorted_Tickets.clear();
     }
 }
